@@ -1,7 +1,24 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- The INTERNET permission is required for development. Specifically,
-         the Flutter tool needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
-    -->
+
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.examen_2_emergency_app">
+
+    <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Definición de la actividad principal -->
+    <application
+        android:label="TuNombreDeApp"
+        android:icon="@mipmap/ic_launcher">
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Puedes declarar otras actividades aquí si es necesario -->
+
+    </application>
 </manifest>

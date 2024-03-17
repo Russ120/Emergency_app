@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, avoid_print
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, avoid_print, use_build_context_synchronously
 
 // import 'dart:io';
 
@@ -78,13 +78,20 @@ import 'package:flutter/material.dart';
 import 'DetalleEvento.dart';
 import 'EditarEvento.dart';
 
-class EventosPage extends StatelessWidget {
+class EventosPage extends StatefulWidget {
+  @override
+  _EventosPageState createState() => _EventosPageState();
+}
+
+class _EventosPageState extends State<EventosPage> {
+  Future<List<Evento>> _eventosFuture = DB.getAllEvents();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Eventos')),
       body: FutureBuilder<List<Evento>>(
-        future: DB.getAllEvents(), // Obtener los eventos
+        future: _eventosFuture, // Obtener los eventos
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final eventos = snapshot.data!;
@@ -94,17 +101,41 @@ class EventosPage extends StatelessWidget {
                 final evento = eventos[index];
                 return ListTile(
                   title: Text(evento.title),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      // Navegar a la página de edición pasando el evento como parámetro
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditarEvento(evento: evento),
-                        ),
-                      );
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          // Navegar a la página de edición pasando el evento como parámetro
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditarEvento(
+                                eventoParaEditar: evento,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () async {
+                          // Eliminar el evento de la base de datos
+                          await DB.delete(evento);
+                          // Actualizar la UI después de eliminar el evento
+                          setState(() {
+                            _eventosFuture = DB.getAllEvents();
+                          });
+                          // Mostrar un mensaje de confirmación
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Evento eliminado'),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   onTap: () => Navigator.push(
                     context,
@@ -117,13 +148,13 @@ class EventosPage extends StatelessWidget {
             );
           }
           // SI DA ERROR PUES ESTO
-
           else if (snapshot.hasError) {
             // Imprimir el error en la consola
             print('Error al obtener los eventos: ${snapshot.error}');
             return Center(
-                child: Text(
-                    'Error al cargar los eventos')); // Mostrar un mensaje al usuario
+              child: Text(
+                  'Error al cargar los eventos'), // Mostrar un mensaje al usuario
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
