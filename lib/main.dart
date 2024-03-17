@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       home:
-          TabMenuPage(), // Cambié WelcomePage() por TabMenuPage() para tener el menú en la página de inicio
+          MenuPages(), // Cambié WelcomePage() por TabMenuPage() para tener el menú en la página de inicio
       routes: {
         '/nuevo_evento': (context) => NuevoEventoForm(),
       },

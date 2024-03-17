@@ -75,6 +75,9 @@ import 'package:examen_2_emergency_app/database/db.dart'; // Importar las funcio
 import 'package:examen_2_emergency_app/database/evento.dart'; // Importar la clase Evento
 import 'package:flutter/material.dart';
 
+import 'DetalleEvento.dart';
+import 'EditarEvento.dart';
+
 class EventosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -91,11 +94,31 @@ class EventosPage extends StatelessWidget {
                 final evento = eventos[index];
                 return ListTile(
                   title: Text(evento.title),
-                  // onTap: () => navegar a DetalleEvento... (si se necesita)
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      // Navegar a la página de edición pasando el evento como parámetro
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditarEvento(evento: evento),
+                        ),
+                      );
+                    },
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetalleEvento(evento: evento),
+                    ),
+                  ),
                 );
               },
             );
-          } else if (snapshot.hasError) {
+          }
+          // SI DA ERROR PUES ESTO
+
+          else if (snapshot.hasError) {
             // Imprimir el error en la consola
             print('Error al obtener los eventos: ${snapshot.error}');
             return Center(

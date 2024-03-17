@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, use_key_in_widget_constructors, prefer_const_constructors, avoid_print, unnecessary_null_comparison, no_leading_underscores_for_local_identifiers, await_only_futures, unused_local_variable, avoid_unnecessary_containers
+// ignore_for_file: library_private_types_in_public_api, use_key_in_widget_constructors, prefer_const_constructors, avoid_print, unnecessary_null_comparison, no_leading_underscores_for_local_identifiers, await_only_futures, unused_local_variable, avoid_unnecessary_containers, unused_element
 
 import 'package:flutter/material.dart';
 
@@ -26,6 +26,13 @@ class _NuevoEventoFormState extends State<NuevoEventoForm> {
   // XFile? _image;
 
   // String? imagePath;
+  void _limpiar() {
+    _titleController.clear();
+    _descriptionController.clear();
+    _dateController.clear();
+    // _photoController.clear();
+    FocusScope.of(context).unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +59,7 @@ class _NuevoEventoFormState extends State<NuevoEventoForm> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Título'),
+                maxLines: 2,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese un título';
@@ -59,11 +67,12 @@ class _NuevoEventoFormState extends State<NuevoEventoForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 15),
               // DESCRIPCION
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Descripción'),
-                maxLines: 4,
+                maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese una descripción';
@@ -81,6 +90,7 @@ class _NuevoEventoFormState extends State<NuevoEventoForm> {
               //       }
               //       return null;
               //     }),
+              SizedBox(height: 15),
               GestureDetector(
                 onTap: () async {
                   DateTime? fecha = await showDatePicker(
@@ -184,53 +194,53 @@ class _NuevoEventoFormState extends State<NuevoEventoForm> {
 
               const SizedBox(height: 20),
               // BOTON
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Convertir la fecha del controlador a DateTime
-                    // DateTime? fecha;
-                    // if (_dateController.text.isNotEmpty) {
-                    //   fecha = DateTime.parse(_dateController.text);
-                    // }
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Color de fondo azul
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Crear un nuevo evento con los datos ingresados
+                        Evento nuevoEvento = Evento(
+                          // id: null, // Puedes proporcionar un valor predeterminado o permitir que se genere automáticamente en la base de datos
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                          date:
+                              _fecha, // Asignar el valor de fecha convertido a DateTime
+                          // photo: _photoController.text,
+                          photo: _titleController.text,
+                        );
 
-                    // Crear un nuevo evento con los datos ingresados
-                    Evento nuevoEvento = Evento(
-                      // id: null, // Puedes proporcionar un valor predeterminado o permitir que se genere automáticamente en la base de datos
-                      title: _titleController.text,
-                      description: _descriptionController.text,
-                      date:
-                          _fecha, // Asignar el valor de fecha convertido a DateTime
-                      // photo: _photoController.text,
-                      photo: _titleController.text,
-                    );
+                        // Guardar el nuevo evento en la base de datos
+                        DB.insert(nuevoEvento);
 
-                    // Guardar el nuevo evento en la base de datos
-                    DB.insert(nuevoEvento);
-
-                    // Mostrar un mensaje de éxito
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Evento registrado exitosamente'),
-                      ),
-                    );
-
-                    // Limpiar los campos del formulario después de guardar el evento
-                    _titleController.clear();
-                    _descriptionController.clear();
-                    _dateController.clear();
-                    // _photoController.clear();
-                  }
-                },
-                child: Text('Guardar'),
+                        // Mostrar un mensaje de éxito
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Evento registrado exitosamente'),
+                          ),
+                        );
+                        _limpiar();
+                      }
+                    },
+                    child:
+                        Text('Guardar', style: TextStyle(color: Colors.white)),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Color de fondo azul
+                    ),
+                    onPressed: () {
+                      _limpiar();
+                    },
+                    child:
+                        Text("Cancelar", style: TextStyle(color: Colors.white)),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                  child: Text("Cancelar"),
-                  onPressed: () {
-                    _titleController.clear();
-                    _descriptionController.clear();
-                    _dateController.clear();
-                    // _photoController.clear();
-                  }),
             ],
           ),
         ),
