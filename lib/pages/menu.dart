@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'Portada.dart';
 import 'RegistrarEventos.dart';
+import 'TodosLosEventos.dart';
 
 class TabMenuPage extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class TabMenuPage extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          children: [WelcomePage(), NuevoEventoForm(), NuevoEventoForm()],
+          children: [WelcomePage(), NuevoEventoForm(), EventosPage()],
         ),
       ),
     );

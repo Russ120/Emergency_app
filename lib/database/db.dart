@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element, unused_local_variable, avoid_print
+// ignore_for_file: unused_element, unused_local_variable, avoid_print, prefer_interpolation_to_compose_strings
 
 import 'package:examen_2_emergency_app/database/evento.dart';
 import 'package:path/path.dart';
@@ -14,8 +14,12 @@ class DB {
       return openDatabase(join(await getDatabasesPath(), 'eventos.db'),
           //este metodo es para decir que si no esta creada la base de datos se ejetara la primera ves esto
           onCreate: (db, version) {
-        db.execute(
-            'CREATE TABLE eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT, photo TEXT)');
+        db.execute('''CREATE TABLE eventos (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              title TEXT NOT NULL,
+              description TEXT NOT NULL,
+              date TEXT NOT NULL,
+              photo TEXT)''');
       },
           // Aqui se define la version para que luego pueda hacer otra operacion y aqui le digo que esta será la uno
           version: 1);
@@ -97,7 +101,11 @@ class DB {
               id: eventosMap[index]['id'],
               title: eventosMap[index]['title'],
               description: eventosMap[index]['description'],
-              date: eventosMap[index]['date'],
+              // date: eventosMap[index]['date'],
+              // Convertir la fecha solo si no es null
+              date: eventosMap[index]['date'] != null
+                  ? DateTime.parse(eventosMap[index]['date'])
+                  : null,
               photo: eventosMap[index]['photo']));
     } catch (e) {
       print('Error al obtener todos los eventos: $e');
