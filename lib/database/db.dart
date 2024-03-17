@@ -1,6 +1,6 @@
 // ignore_for_file: unused_element, unused_local_variable, avoid_print
 
-import 'package:examen_2_emergency_app/evento.dart';
+import 'package:examen_2_emergency_app/database/evento.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -15,7 +15,7 @@ class DB {
           //este metodo es para decir que si no esta creada la base de datos se ejetara la primera ves esto
           onCreate: (db, version) {
         db.execute(
-            'CREATE  TABLE eventos (id INTEGER PRIMARY KEY, title TEXT, description TEXT, date TEXT, photo TEXT  )');
+            'CREATE TABLE eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT, photo TEXT)');
       },
           // Aqui se define la version para que luego pueda hacer otra operacion y aqui le digo que esta será la uno
           version: 1);

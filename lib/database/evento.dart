@@ -1,14 +1,14 @@
 class Evento {
   // Caracteristicas / Propiedades
-  int id;
+  int? id;
   String title;
   String description;
-  DateTime date;
+  DateTime? date;
   String photo;
 
   //constructor
   Evento(
-      {required this.id,
+      {this.id,
       required this.title,
       required this.description,
       required this.date,
@@ -20,7 +20,7 @@ class Evento {
       "id": id,
       "title": title,
       "description": description,
-      "date": date.toIso8601String(),
+      "date": date!.toIso8601String(),
       "photo": photo
     };
   }
